@@ -165,9 +165,9 @@ error:
     return false;
 }
 
-bool musdl3_init(mu_Context* ctx, SDL_Window* window, SDL_Renderer* renderer, TTF_Font* font)
+bool musdl3_init(mu_Context* ctx, SDL_Renderer* renderer, TTF_Font* font)
 {
-    if (!ctx || !window || !renderer || !font) { return false; }
+    if (!ctx || !renderer || !font) { return false; }
 
     ctx->style = SDL_calloc(1, sizeof(mu_Style));
     if (!ctx->style) { return false; }
@@ -177,8 +177,6 @@ bool musdl3_init(mu_Context* ctx, SDL_Window* window, SDL_Renderer* renderer, TT
 
     ctx->text_width = musdl3_text_width;
     ctx->text_height = musdl3_text_height;
-
-    SDL_StartTextInput(window);
 
     return true;
 }
@@ -275,9 +273,23 @@ void musdl3_process_event(mu_Context* ctx, SDL_Event* event)
 void musdl3_render_commands(mu_Context* ctx, SDL_Renderer* renderer)
 {
     if (!ctx || !ctx->style->font || !renderer) { return; }
+    
+    SDL_Window* window = SDL_GetRenderWindow(renderer);
+    if (window)
+    {
+        if ((ctx->textbox_focused) && (!SDL_TextInputActive(window)))
+        {
+            SDL_Log("start");
+            SDL_StartTextInput(window);
+        }
+        else if ((!ctx->textbox_focused) && (SDL_TextInputActive(window)))
+        {
+            SDL_Log("stop");
+            SDL_StopTextInput(window);
+        }
+    }
 
     mu_Command* command = NULL;
-
     while (mu_next_command(ctx, &command))
     {
         if (command->type == MU_COMMAND_TEXT)

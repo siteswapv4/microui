@@ -3,7 +3,7 @@
 #include <SDL3_ttf/SDL_ttf.h>
 #include "microui.h"
 
-bool musdl3_init(mu_Context* ctx, SDL_Window* window, SDL_Renderer* renderer, TTF_Font* font);
+bool musdl3_init(mu_Context* ctx, SDL_Renderer* renderer, TTF_Font* font);
 
 void musdl3_quit(mu_Context* ctx);
 
