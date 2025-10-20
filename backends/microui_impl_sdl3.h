@@ -1,7 +1,7 @@
 #pragma once
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
-#include "microui.h"
+#include "../microui.h"
 
 bool musdl3_init(mu_Context* ctx, SDL_Renderer* renderer, TTF_Font* font);
 
