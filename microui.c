@@ -145,6 +145,7 @@ void mu_begin(mu_Context *ctx) {
   ctx->next_hover_root = NULL;
   ctx->mouse_delta.x = ctx->mouse_pos.x - ctx->last_mouse_pos.x;
   ctx->mouse_delta.y = ctx->mouse_pos.y - ctx->last_mouse_pos.y;
+  ctx->textbox_focused = 0;
   ctx->frame++;
 }
 
@@ -434,10 +435,10 @@ mu_Command* mu_push_command(mu_Context *ctx, int type) {
 }
 
 char* mu_push_command_text(mu_Context *ctx, int size) {
-    char *str = (char*) (ctx->command_text.items + ctx->command_text.idx);
-    expect(ctx->command_text.idx + size < MU_COMMANDTEXT_SIZE);
-    ctx->command_text.idx += size;
-    return str;
+  char *str = (char*) (ctx->command_text.items + ctx->command_text.idx);
+  expect(ctx->command_text.idx + size < MU_COMMANDTEXT_SIZE);
+  ctx->command_text.idx += size;
+  return str;
 }
 
 
@@ -784,6 +785,7 @@ int mu_textbox_raw(mu_Context *ctx, char *buf, int bufsz, mu_Id id, mu_Rect r,
   mu_update_control(ctx, id, r, opt | MU_OPT_HOLDFOCUS);
 
   if (ctx->focus == id) {
+    ctx->textbox_focused = 1;
     /* handle text input */
     int len = strlen(buf);
     int n = mu_min(bufsz - len - 1, (int) strlen(ctx->input_text));
